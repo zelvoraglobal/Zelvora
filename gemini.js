@@ -10,7 +10,7 @@ export async function askZelvora(prompt) {
     // 2. Using Gemini 3 Flash (Released Dec 2025)
     // Optimized for speed, reasoning, and Indian English accents
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash",
+      model: "gemini-3-flash-preview",
       systemInstruction: "You are the Zelvora Coach. You are a professional, encouraging expert in English fluency and Indian academic success. Keep responses under 3 sentences for natural voice playback.",
       contents: [{ role: "user", parts: [{ text: prompt }] }]
     });
