@@ -2,7 +2,7 @@
 import { GoogleGenAI } from "https://esm.run/@google/genai";
 
 // 1. Initialize with your Restricted API Key
-const API_KEY = "AIzaSyDpueYhA7kc3ciwCet51GJv3_qBf4GtEAo"; 
+const API_KEY = "AIzaSyDe81Wf61bvCyZ6Y5lKnl-gmzE-RT2rkGM"; 
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 export async function askZelvora(prompt) {
