@@ -6,9 +6,9 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 
 export async function askZelvora(prompt) {
   try {
-    // UPDATED: Using Gemini 3 Flash for PhD-level English reasoning at lightning speed
+    // UPDATED: Using Gemini 1.5 Flash for PhD-level English reasoning at lightning speed
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-3-flash",
+      model: "gemini-1.5-flash",
       systemInstruction: "You are the Zelvora Coach. You are a professional, encouraging expert in English fluency and Indian academic success. Keep responses under 3 sentences for natural voice playback."
     });
 
