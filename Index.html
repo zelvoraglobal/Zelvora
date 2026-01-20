@@ -34,65 +34,71 @@
     </section>
   </div>
 
-  <script type="module">
-    // Import the latest 2026 Firebase AI Logic SDK
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-    import { getAI, getGenerativeModel } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-ai.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getAI, getGenerativeModel } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-ai.js";
 
-    // 1. YOUR FIREBASE CONFIG
-    // REPLACE these values with the ones from your Firebase Project Settings
-    const firebaseConfig = {
-      apiKey: "AIzaSy...", 
-      authDomain: "zelvora-global.firebaseapp.com",
-      projectId: "zelvora-global",
-      storageBucket: "zelvora-global.appspot.com",
-      messagingSenderId: "123456789",
-      appId: "1:123456789:web:abcdef"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSy...", 
+    authDomain: "zelvora-global.firebaseapp.com",
+    projectId: "zelvora-global",
+    appId: "1:123456789:web:abcdef"
+  };
 
-    // 2. INITIALIZE FIREBASE & AI
-    const app = initializeApp(firebaseConfig);
-    const ai = getAI(app);
+  // ✅ Initialize Firebase
+  const app = initializeApp(firebaseConfig);
 
-    // 3. SELECT THE 2026 PREVIEW MODEL
-    const model = getGenerativeModel(ai, { 
-      model: "gemini-3-flash-preview" 
-    });
+  // ✅ FORCE FREE TIER (VERY IMPORTANT)
+  const ai = getAI(app, { backend: "google-ai" });
 
-    const output = document.getElementById("chat-output");
-    const userInput = document.getElementById("user-input");
-    const sendBtn = document.getElementById("send-btn");
-    const status = document.getElementById("status");
+  // ✅ Free 2026 model
+  const model = getGenerativeModel(ai, {
+    model: "gemini-3-flash-preview"
+  });
 
-    async function handleChat() {
-      const prompt = userInput.value.trim();
-      if (!prompt) return;
+  const output = document.getElementById("chat-output");
+  const userInput = document.getElementById("user-input");
+  const sendBtn = document.getElementById("send-btn");
+  const status = document.getElementById("status");
 
-      // UI Updates
-      output.innerHTML += `<div style="margin-bottom:10px; color:#9ca3af;"><b>You:</b> ${prompt}</div>`;
-      userInput.value = "";
-      sendBtn.disabled = true;
-      status.style.display = "block";
+  async function handleChat() {
+    const prompt = userInput.value.trim();
+    if (!prompt) return;
+
+    output.innerHTML += `<div style="color:#9ca3af;"><b>You:</b> ${prompt}</div>`;
+    userInput.value = "";
+    sendBtn.disabled = true;
+    status.style.display = "block";
+
+    try {
+      const result = await model.generateContent(prompt);
+      const text = result.response.text();
+
+      output.innerHTML += `<div><b>Zelvora:</b> ${text}</div>`;
+    } catch (err) {
+      console.error(err);
+      output.innerHTML += `<div style="color:#ff4d4d;">❌ AI not connected</div>`;
+    } finally {
+      sendBtn.disabled = false;
+      status.style.display = "none";
       output.scrollTop = output.scrollHeight;
-
-      try {
-        // Direct call via Firebase Proxy (No Secret API Key needed in code!)
-        const result = await model.generateContent(prompt);
-        const responseText = result.response.text();
-
-        output.innerHTML += `<div style="margin-bottom:15px;"><b>Zelvora:</b> ${responseText}</div>`;
-      } catch (error) {
-        console.error("AI Error:", error);
-        output.innerHTML += `<div style="color:#ff4d4d;">System Error: Secure connection interrupted.</div>`;
-      } finally {
-        sendBtn.disabled = false;
-        status.style.display = "none";
-        output.scrollTop = output.scrollHeight;
-      }
     }
+  }
 
-    sendBtn.onclick = handleChat;
-    userInput.onkeypress = (e) => { if(e.key === "Enter") handleChat(); };
-  </script>
+  sendBtn.onclick = handleChat;
+  userInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") handleChat();
+  });
+
+  // 🔥 AUTO CONNECTION TEST (runs once)
+  (async () => {
+    try {
+      const r = await model.generateContent("Reply only with CONNECTED");
+      output.innerHTML += `<div style="color:#10b981;"><b>System:</b> ${r.response.text()}</div>`;
+    } catch {
+      output.innerHTML += `<div style="color:#ff4d4d;"><b>System:</b> AI NOT CONNECTED</div>`;
+    }
+  })();
+</script>
 </body>
 </html>
