@@ -1,22 +1,39 @@
-// Step A: Import the Speaker logic (if in a separate file) or keep it here
+// 1. The "Speaker" (Text-to-Speech)
 function speakNow(textToSay) {
-  const synth = window.speechSynthesis;
+  // Cancel any previous speech so they don't overlap
+  window.speechSynthesis.cancel(); 
+  
   const utterance = new SpeechSynthesisUtterance(textToSay);
+  utterance.lang = 'en-IN'; // Professional Indian-English accent
+  utterance.rate = 0.9;      // Slightly slower for better learning
+  utterance.pitch = 1.0;
   
-  utterance.lang = 'en-IN'; // Use an English-Indian accent for your users
-  utterance.rate = 0.9;      // Speak a little slower so students can learn
-  
-  synth.speak(utterance);
+  window.speechSynthesis.speak(utterance);
 }
 
-// Step B: The main function that connects Gemini to the Speaker
+// 2. The AI & Speaker Bridge
 export async function askAndSpeak(userInput) {
-  // 1. Ask Gemini (The Brain)
-  const response = await askZelvora(userInput, "english"); 
+  const outputDiv = document.getElementById("chat-output");
   
-  // 2. Show the text on the screen so the user can read it
-  document.getElementById("output").innerText = response;
-  
-  // 3. IMMEDIATELY send that same text to the speaker
-  speakNow(response);
+  try {
+    // Show "thinking" status
+    outputDiv.innerText = "Zelvora is thinking...";
+
+    // 1. Get response from Gemini (using your existing function)
+    const response = await askZelvora(userInput); 
+    
+    // 2. Update the screen
+    outputDiv.innerHTML = `<b>Zelvora:</b> ${response}`;
+    
+    // 3. Start speaking
+    speakNow(response);
+    
+  } catch (error) {
+    console.error("Speech/AI Error:", error);
+    outputDiv.innerText = "Sorry, I couldn't speak right now.";
+  }
 }
+
+// 3. THE CRITICAL "BRIDGE" 
+// This allows your HTML button <button onclick="askAndSpeak(...)"> to find the code
+window.askAndSpeak = askAndSpeak;
