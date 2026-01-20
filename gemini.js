@@ -1,7 +1,7 @@
 // 2026 Browser-compatible import
 import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-const API_KEY = "PASTE_YOUR_RESTRICTED_KEY_HERE"; 
+const API_KEY = "AIzaSyDpueYhA7kc3ciwCet51GJv3_qBf4GtEAo"; 
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 export async function askZelvora(prompt) {
