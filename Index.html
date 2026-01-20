@@ -66,7 +66,7 @@
     // 2026 Modern SDK Import
     import { GoogleGenAI } from "https://esm.run/@google/genai";
 
-    // 1. CONFIGURATION
+    // 1. CONFIGURATION (Paste your key below)
     const API_KEY = " "; 
     const ai = new GoogleGenAI({ apiKey: API_KEY });
 
@@ -80,7 +80,7 @@
     function speak(text) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-IN'; // Indian English for local relevance
+      utterance.lang = 'en-IN'; // Indian-English accent
       utterance.rate = 1.0;
       window.speechSynthesis.speak(utterance);
     }
@@ -90,6 +90,7 @@
       const text = userInput.value.trim();
       if (!text) return;
 
+      // Update UI with User Message
       output.innerHTML += `<div style="margin-bottom:10px; color:#9ca3af;"><b>You:</b> ${text}</div>`;
       const thinkingDiv = document.createElement("div");
       thinkingDiv.className = "thinking";
@@ -101,27 +102,35 @@
       output.scrollTop = output.scrollHeight;
 
       try {
-        const response = await ai.models.generateContent({
-          model: "gemini-3-flash", // PhD-level reasoning at Flash speed
-          systemInstruction: "You are the Zelvora Coach. Focus on English fluency, academic help, and business growth for Indian students. Keep replies under 3 sentences.",
-          contents: [{ role: "user", parts: [{ text: text }] }]
+        // Correct Model Call for Jan 2026
+        const model = ai.getGenerativeModel({ model: "gemini-3-flash" });
+        
+        const result = await model.generateContent({
+          contents: [{ role: "user", parts: [{ text: text }] }],
+          generationConfig: {
+            maxOutputTokens: 150,
+            temperature: 0.7,
+          },
+          systemInstruction: "You are the Zelvora Coach. Focus on English fluency, academic help, and business growth for Indian students. Keep replies under 3 sentences."
         });
 
-        const responseText = response.text;
+        const responseText = result.response.text();
         thinkingDiv.remove();
+        
         output.innerHTML += `<div style="margin-bottom:15px;"><b>Zelvora:</b> ${responseText}</div>`;
         speak(responseText);
+
       } catch (err) {
         thinkingDiv.remove();
         console.error("Zelvora Error:", err);
-        output.innerHTML += `<div style="color:#ff4d4d;">Error: Check your domain restriction (/*) or internet.</div>`;
+        output.innerHTML += `<div style="color:#ff4d4d;">Error: Check your API key or domain restriction (/*).</div>`;
       } finally {
         sendBtn.disabled = false;
         output.scrollTop = output.scrollHeight;
       }
     }
 
-    // 4. VOICE INPUT
+    // 4. VOICE INPUT (Speech Recognition)
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       const recognition = new SpeechRecognition();
@@ -136,6 +145,7 @@
       micBtn.style.display = "none";
     }
 
+    // Bind Event Listeners
     sendBtn.onclick = handleRequest;
     userInput.addEventListener("keypress", (e) => { if(e.key === "Enter") handleRequest(); });
   </script>
