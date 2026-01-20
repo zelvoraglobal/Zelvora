@@ -3,151 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zelvora – AI Coaching & Business Growth</title>
+  <title>Zelvora – Secure AI Coach</title>
   <style>
     :root {
       --bg: #f6f7fb; --primary: #0c2340; --accent: #1f7aff; --text: #111827;
-      --muted: #6b7280; --card: #ffffff; --border: #e5e7eb; --radius-pill: 999px;
+      --muted: #6b7280; --card: #ffffff; --radius-pill: 999px;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); }
-    .page { max-width: 1120px; margin: 0 auto; padding: 22px 16px; }
-    
-    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 26px; }
-    .logo-icon { width: 40px; height: 40px; border-radius: 14px; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; }
-    
-    .ai-section {
-      background: var(--primary); color: white; padding: 30px; border-radius: 28px;
-      box-shadow: 0 18px 40px rgba(15,23,42,0.15); margin: 30px 0;
-    }
-    #chat-output {
-      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-      padding: 20px; border-radius: 18px; min-height: 120px; margin-bottom: 20px;
-      font-size: 15px; line-height: 1.6; overflow-y: auto; max-height: 300px;
-    }
-    .input-group {
-      display: flex; gap: 10px; background: white; padding: 8px; border-radius: var(--radius-pill);
-    }
-    input { flex: 1; border: none; outline: none; padding: 0 15px; font-size: 14px; color: var(--text); }
-    .btn { padding: 10px 20px; border-radius: var(--radius-pill); border: none; cursor: pointer; font-weight: 600; transition: 0.3s; }
-    .btn-primary { background: var(--accent); color: white; }
-    .btn-primary:disabled { background: var(--muted); }
-    .btn-mic { background: #f3f4f6; font-size: 20px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: none; cursor: pointer; }
-
-    .thinking { opacity: 0.6; font-style: italic; color: #9ca3af; }
+    body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+    .page { max-width: 800px; margin: 0 auto; }
+    .ai-section { background: var(--primary); color: white; padding: 30px; border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    #chat-output { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 18px; min-height: 150px; margin-bottom: 20px; overflow-y: auto; max-height: 400px; }
+    .input-group { display: flex; gap: 10px; background: white; padding: 8px; border-radius: var(--radius-pill); }
+    input { flex: 1; border: none; outline: none; padding: 0 15px; font-size: 14px; }
+    .btn { padding: 10px 20px; border-radius: var(--radius-pill); border: none; cursor: pointer; font-weight: 600; background: var(--accent); color: white; }
+    .btn:disabled { background: var(--muted); cursor: not-allowed; }
+    .thinking { opacity: 0.6; font-style: italic; font-size: 13px; margin-top: 5px; }
   </style>
 </head>
 <body>
   <div class="page">
-    <header>
-      <div style="display:flex; align-items:center; gap:12px;">
-        <div class="logo-icon">Z</div>
-        <div style="font-weight:700; letter-spacing:.08em;">ZELVORA</div>
-      </div>
-    </header>
-
     <section class="ai-section">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-        <h2>Zelvora AI Coach</h2>
-        <span id="status" style="font-size:11px; opacity:0.7;">● Online</span>
-      </div>
-      
-      <div id="chat-output">"Hello! I am your Zelvora Coach. Tap the mic to practice English or type a business question."</div>
+      <h2>Zelvora AI Coach</h2>
+      <div id="chat-output">System: Secure Firebase Tunnel Initialized. Ready for questions.</div>
 
       <div class="input-group">
-        <button id="mic-btn" class="btn-mic" title="Voice Input">🎤</button>
-        <input type="text" id="user-input" placeholder="Ask about English fluency or Academics...">
-        <button id="send-btn" class="btn btn-primary">Send</button>
+        <input type="text" id="user-input" placeholder="Ask about business or academics...">
+        <button id="send-btn" class="btn">Send</button>
       </div>
+      <div id="status" class="thinking" style="display:none;">Zelvora is processing...</div>
     </section>
   </div>
 
   <script type="module">
-    // 2026 Modern SDK Import
-    import { GoogleGenAI } from "https://esm.run/@google/genai";
+    // Import the latest 2026 Firebase AI Logic SDK
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+    import { getAI, getGenerativeModel } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-ai.js";
 
-    // 1. CONFIGURATION (Paste your key below)
-    const API_KEY = " "; 
-    const ai = new GoogleGenAI({ apiKey: API_KEY });
+    // 1. YOUR FIREBASE CONFIG
+    // REPLACE these values with the ones from your Firebase Project Settings
+    const firebaseConfig = {
+      apiKey: "AIzaSy...", 
+      authDomain: "zelvora-global.firebaseapp.com",
+      projectId: "zelvora-global",
+      storageBucket: "zelvora-global.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcdef"
+    };
+
+    // 2. INITIALIZE FIREBASE & AI
+    const app = initializeApp(firebaseConfig);
+    const ai = getAI(app);
+
+    // 3. SELECT THE 2026 PREVIEW MODEL
+    const model = getGenerativeModel(ai, { 
+      model: "gemini-3-flash-preview" 
+    });
 
     const output = document.getElementById("chat-output");
     const userInput = document.getElementById("user-input");
     const sendBtn = document.getElementById("send-btn");
-    const micBtn = document.getElementById("mic-btn");
     const status = document.getElementById("status");
 
-    // 2. VOICE OUTPUT
-    function speak(text) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-IN'; // Indian-English accent
-      utterance.rate = 1.0;
-      window.speechSynthesis.speak(utterance);
-    }
+    async function handleChat() {
+      const prompt = userInput.value.trim();
+      if (!prompt) return;
 
-    // 3. MAIN AI LOGIC (Gemini 3 Flash 2026)
-    async function handleRequest() {
-      const text = userInput.value.trim();
-      if (!text) return;
-
-      // Update UI with User Message
-      output.innerHTML += `<div style="margin-bottom:10px; color:#9ca3af;"><b>You:</b> ${text}</div>`;
-      const thinkingDiv = document.createElement("div");
-      thinkingDiv.className = "thinking";
-      thinkingDiv.innerText = "Zelvora is thinking...";
-      output.appendChild(thinkingDiv);
-      
+      // UI Updates
+      output.innerHTML += `<div style="margin-bottom:10px; color:#9ca3af;"><b>You:</b> ${prompt}</div>`;
       userInput.value = "";
       sendBtn.disabled = true;
+      status.style.display = "block";
       output.scrollTop = output.scrollHeight;
 
       try {
-        // Correct Model Call for Jan 2026
-        const model = ai.getGenerativeModel({ model: "gemini-3-flash-preview" });
-        
-        const result = await model.generateContent({
-          contents: [{ role: "user", parts: [{ text: text }] }],
-          generationConfig: {
-            maxOutputTokens: 150,
-            temperature: 0.7,
-          },
-          systemInstruction: "You are the Zelvora Coach. Focus on English fluency, academic help, and business growth for Indian students. Keep replies under 3 sentences."
-        });
-
+        // Direct call via Firebase Proxy (No Secret API Key needed in code!)
+        const result = await model.generateContent(prompt);
         const responseText = result.response.text();
-        thinkingDiv.remove();
-        
-        output.innerHTML += `<div style="margin-bottom:15px;"><b>Zelvora:</b> ${responseText}</div>`;
-        speak(responseText);
 
-      } catch (err) {
-        thinkingDiv.remove();
-        console.error("Zelvora Error:", err);
-        output.innerHTML += `<div style="color:#ff4d4d;">Error: Check your API key or domain restriction (/*).</div>`;
+        output.innerHTML += `<div style="margin-bottom:15px;"><b>Zelvora:</b> ${responseText}</div>`;
+      } catch (error) {
+        console.error("AI Error:", error);
+        output.innerHTML += `<div style="color:#ff4d4d;">System Error: Secure connection interrupted.</div>`;
       } finally {
         sendBtn.disabled = false;
+        status.style.display = "none";
         output.scrollTop = output.scrollHeight;
       }
     }
 
-    // 4. VOICE INPUT (Speech Recognition)
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      const recognition = new SpeechRecognition();
-      recognition.lang = 'en-US';
-      micBtn.onclick = () => { recognition.start(); status.innerText = "Listening..."; };
-      recognition.onresult = (event) => {
-        userInput.value = event.results[0][0].transcript;
-        handleRequest();
-      };
-      recognition.onend = () => { status.innerText = "● Online"; };
-    } else {
-      micBtn.style.display = "none";
-    }
-
-    // Bind Event Listeners
-    sendBtn.onclick = handleRequest;
-    userInput.addEventListener("keypress", (e) => { if(e.key === "Enter") handleRequest(); });
+    sendBtn.onclick = handleChat;
+    userInput.onkeypress = (e) => { if(e.key === "Enter") handleChat(); };
   </script>
 </body>
 </html>
