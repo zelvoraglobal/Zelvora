@@ -34,8 +34,7 @@
     .btn-primary:disabled { background: var(--muted); }
     .btn-mic { background: #f3f4f6; font-size: 20px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: none; cursor: pointer; }
 
-    /* Pulse animation for "Thinking" */
-    .thinking { opacity: 0.6; font-style: italic; }
+    .thinking { opacity: 0.6; font-style: italic; color: #9ca3af; }
   </style>
 </head>
 <body>
@@ -64,17 +63,12 @@
   </div>
 
   <script type="module">
-    import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+    // 2026 Modern SDK Import
+    import { GoogleGenAI } from "https://esm.run/@google/genai";
 
     // 1. CONFIGURATION
-    const API_KEY = "AIzaSyDpueYhA7kc3ciwCet51GJv3_qBf4GtEAo"; // Ensure this is your RESTRICTED key
-    const genAI = new GoogleGenerativeAI(API_KEY);
-    
-    // Using 1.5 Flash for stability or 2.0 Flash for speed
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
-      systemInstruction: "You are the Zelvora Coach. Focus on English fluency, academic help, and business growth for Indian students/entrepreneurs. Keep replies short (under 3 sentences) and encouraging."
-    });
+    const API_KEY = "AIzaSyDpueYhA7kc3ciwCet51GJv3_qBf4GtEAo"; 
+    const ai = new GoogleGenAI({ apiKey: API_KEY });
 
     const output = document.getElementById("chat-output");
     const userInput = document.getElementById("user-input");
@@ -82,106 +76,68 @@
     const micBtn = document.getElementById("mic-btn");
     const status = document.getElementById("status");
 
-    // 2. VOICE OUTPUT (Text-to-Speech)
+    // 2. VOICE OUTPUT
     function speak(text) {
-      // Cancel any ongoing speech before starting new one
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-IN'; // Professional Indian English accent
+      utterance.lang = 'en-IN'; // Indian English for local relevance
       utterance.rate = 1.0;
       window.speechSynthesis.speak(utterance);
     }
 
-    // 3. MAIN AI LOGIC
+    // 3. MAIN AI LOGIC (Gemini 3 Flash 2026)
     async function handleRequest() {
       const text = userInput.value.trim();
       if (!text) return;
 
-      // Update UI for user message
-      output.innerHTML = `<div style="margin-bottom:10px;"><b>You:</b> ${text}</div>` + 
-                         `<div class="thinking" id="current-op">Zelvora is thinking...</div>`;
+      output.innerHTML += `<div style="margin-bottom:10px; color:#9ca3af;"><b>You:</b> ${text}</div>`;
+      const thinkingDiv = document.createElement("div");
+      thinkingDiv.className = "thinking";
+      thinkingDiv.innerText = "Zelvora is thinking...";
+      output.appendChild(thinkingDiv);
       
       userInput.value = "";
       sendBtn.disabled = true;
+      output.scrollTop = output.scrollHeight;
 
       try {
-        const result = await model.generateContent(text);
-        const responseText = result.response.text();
-        
-        // Update UI with AI Response
-        document.getElementById("current-op").innerHTML = `<b>Zelvora:</b> ${responseText}`;
-        document.getElementById("current-op").removeAttribute("id"); // Remove ID so next message works
-        
+        const response = await ai.models.generateContent({
+          model: "gemini-3-flash", // PhD-level reasoning at Flash speed
+          systemInstruction: "You are the Zelvora Coach. Focus on English fluency, academic help, and business growth for Indian students. Keep replies under 3 sentences.",
+          contents: [{ role: "user", parts: [{ text: text }] }]
+        });
+
+        const responseText = response.text;
+        thinkingDiv.remove();
+        output.innerHTML += `<div style="margin-bottom:15px;"><b>Zelvora:</b> ${responseText}</div>`;
         speak(responseText);
       } catch (err) {
-        console.error(err);
-        output.innerHTML += `<div style="color:#ff4d4d;">Error: Please check your API restrictions or connection.</div>`;
+        thinkingDiv.remove();
+        console.error("Zelvora Error:", err);
+        output.innerHTML += `<div style="color:#ff4d4d;">Error: Check your domain restriction (/*) or internet.</div>`;
       } finally {
         sendBtn.disabled = false;
-        output.scrollTop = output.scrollHeight; // Scroll to bottom
+        output.scrollTop = output.scrollHeight;
       }
     }
 
-    // 4. VOICE INPUT (Speech-to-Text)
+    // 4. VOICE INPUT
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       const recognition = new SpeechRecognition();
-      recognition.continuous = false;
       recognition.lang = 'en-US';
-
-      micBtn.onclick = () => {
-        recognition.start();
-        status.innerText = "Listening...";
-        status.style.color = "#1f7aff";
-      };
-
+      micBtn.onclick = () => { recognition.start(); status.innerText = "Listening..."; };
       recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        userInput.value = transcript;
+        userInput.value = event.results[0][0].transcript;
         handleRequest();
       };
-
-      recognition.onend = () => { 
-        status.innerText = "● Online"; 
-        status.style.color = "inherit";
-      };
+      recognition.onend = () => { status.innerText = "● Online"; };
     } else {
-      micBtn.style.display = "none"; // Hide mic if browser doesn't support it
+      micBtn.style.display = "none";
     }
 
-    // Event Listeners
     sendBtn.onclick = handleRequest;
     userInput.addEventListener("keypress", (e) => { if(e.key === "Enter") handleRequest(); });
   </script>
-  ...
-  <!-- Your page content -->
-
-  <script type="module">
-    import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
-
-    const API_KEY = "AIzaSyDpueYhA7kc3ciwCet51GJv3_qBf4GtEAo";
-    const genAI = new GoogleGenerativeAI(API_KEY);
-
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-      systemInstruction:
-        "You are the Zelvora Coach. Help with English fluency, academics, and business mentoring. Keep answers under 3 sentences."
-    });
-
-    async function askZelvora(prompt) {
-      try {
-        const result = await model.generateContent(prompt);
-        return result.response.text();
-      } catch (err) {
-        console.error("Gemini error:", err);
-        return "Zelvora is unavailable right now.";
-      }
-    }
-
-    // expose to browser console & buttons
-    window.askZelvora = askZelvora;
-  </script>
-</body>
-</html>
 </body>
 </html>
