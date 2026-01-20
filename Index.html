@@ -10,8 +10,8 @@
       --muted: #6b7280; --card: #ffffff; --border: #e5e7eb; --radius-pill: 999px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
-    .page { max-width: 1120px; margin: 0 auto; }
+    body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); }
+    .page { max-width: 1120px; margin: 0 auto; padding: 22px 16px; }
     
     header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 26px; }
     .logo-icon { width: 40px; height: 40px; border-radius: 14px; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; }
@@ -33,6 +33,7 @@
     .btn-primary { background: var(--accent); color: white; }
     .btn-primary:disabled { background: var(--muted); }
     .btn-mic { background: #f3f4f6; font-size: 20px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: none; cursor: pointer; }
+
     .thinking { opacity: 0.6; font-style: italic; color: #9ca3af; }
   </style>
 </head>
@@ -62,10 +63,11 @@
   </div>
 
   <script type="module">
-    // Using the 2026 Modern SDK
+    // 2026 Modern SDK Import
     import { GoogleGenAI } from "https://esm.run/@google/genai";
 
-    const API_KEY = "AIzaSyDpueYhA7kc3ciwCet51GJv3_qBf4GtEAo"; 
+    // 1. CONFIGURATION
+    const API_KEY = "PASTE_YOUR_API_KEY_HERE"; 
     const ai = new GoogleGenAI({ apiKey: API_KEY });
 
     const output = document.getElementById("chat-output");
@@ -74,34 +76,16 @@
     const micBtn = document.getElementById("mic-btn");
     const status = document.getElementById("status");
 
-    // 1. Voice Output (Text-to-Speech)
+    // 2. VOICE OUTPUT
     function speak(text) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-IN';
+      utterance.lang = 'en-IN'; // Indian English for local relevance
       utterance.rate = 1.0;
       window.speechSynthesis.speak(utterance);
     }
 
-    // 2. Main AI Logic
-    async function askZelvora(prompt) {
-      try {
-        const response = await ai.models.generateContent({
-          model: "gemini-3-flash", // 2026 PhD-level stable model
-          systemInstruction: "You are the Zelvora Coach. Expert in English fluency and Indian business growth. Keep replies short (under 3 sentences).",
-          contents: [{ role: "user", parts: [{ text: prompt }] }]
-        });
-        return response.text;
-      } catch (err) {
-        console.error("Zelvora Error:", err);
-        return "I'm having trouble connecting. Please check your domain settings.";
-      }
-    }
-
-    // 3. EXPOSE TO GLOBAL SCOPE (Fixes ReferenceError)
-    window.askZelvora = askZelvora;
-
-    // 4. UI Handlers
+    // 3. MAIN AI LOGIC (Gemini 3 Flash 2026)
     async function handleRequest() {
       const text = userInput.value.trim();
       if (!text) return;
@@ -116,16 +100,28 @@
       sendBtn.disabled = true;
       output.scrollTop = output.scrollHeight;
 
-      const responseText = await askZelvora(text);
-      thinkingDiv.remove();
-      output.innerHTML += `<div style="margin-bottom:15px;"><b>Zelvora:</b> ${responseText}</div>`;
-      speak(responseText);
-      
-      sendBtn.disabled = false;
-      output.scrollTop = output.scrollHeight;
+      try {
+        const response = await ai.models.generateContent({
+          model: "gemini-3-flash", // PhD-level reasoning at Flash speed
+          systemInstruction: "You are the Zelvora Coach. Focus on English fluency, academic help, and business growth for Indian students. Keep replies under 3 sentences.",
+          contents: [{ role: "user", parts: [{ text: text }] }]
+        });
+
+        const responseText = response.text;
+        thinkingDiv.remove();
+        output.innerHTML += `<div style="margin-bottom:15px;"><b>Zelvora:</b> ${responseText}</div>`;
+        speak(responseText);
+      } catch (err) {
+        thinkingDiv.remove();
+        console.error("Zelvora Error:", err);
+        output.innerHTML += `<div style="color:#ff4d4d;">Error: Check your domain restriction (/*) or internet.</div>`;
+      } finally {
+        sendBtn.disabled = false;
+        output.scrollTop = output.scrollHeight;
+      }
     }
 
-    // 5. Voice Input
+    // 4. VOICE INPUT
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       const recognition = new SpeechRecognition();
