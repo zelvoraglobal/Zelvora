@@ -1,44 +1,32 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// 1. Setup the API with your Key (Uses the one you saved in GitHub Secrets)
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+/**
+ * ZELVORA AI BRAIN (2026 EDITION)
+ * 1. Replace the placeholder below with the API key you just restricted.
+ * 2. This file is called by your index.html to process speech and text.
+ */
+const API_KEY = "PASTE_YOUR_RESTRICTED_KEY_HERE"; 
+const genAI = new GoogleGenerativeAI(API_KEY);
 
-// 2. Pre-configure the 3 Models for Zelvora's different features
-const models = {
-  // 1,000 Daily Requests - Best for quick English corrections
-  english: genAI.getGenerativeModel({ 
-    model: "gemini-2.5-flash-lite",
-    systemInstruction: "You are the Zelvora Fluency Coach. Focus on English grammar and MTI (Mother Tongue Influence) reduction for Indian speakers. Keep responses short and conversational."
-  }),
-
-  // 500 Daily Requests - Best for reading PDFs and Academic Coaching
-  academic: genAI.getGenerativeModel({ 
-    model: "gemini-2.5-flash",
-    systemInstruction: "You are the Zelvora Academic Tutor. You excel at explaining complex subjects from textbooks and summarizing long chapters into study notes."
-  }),
-
-  // 100 Daily Requests - Best for competitive exam logic (UPSC, JEE, etc.)
-  specialist: genAI.getGenerativeModel({ 
-    model: "gemini-2.5-pro",
-    systemInstruction: "You are the Zelvora Specialist. Use high-level reasoning to solve complex math, coding, or competitive exam questions step-by-step."
-  })
-};
-
-// 3. The "Brain" Router - This function decides which model to use
-export async function askZelvora(userInput, type = "english") {
+export async function askZelvora(prompt) {
   try {
-    const selectedModel = models[type] || models.english;
-    
-    // Check for "Busy" signal (RPM limit protection)
-    const result = await selectedModel.generateContent(userInput);
+    // We use gemini-2.0-flash for near-instant "Voice-to-Voice" latency
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-2.0-flash",
+      systemInstruction: "You are the Zelvora Coach. You are professional, encouraging, and an expert in English fluency and Indian academic success. Keep responses under 3 sentences to ensure they sound natural when spoken aloud."
+    });
+
+    const result = await model.generateContent(prompt);
     const response = await result.response;
+    const text = response.text();
     
-    return response.text();
-    
+    return text;
   } catch (error) {
+    // Check if the error is a Rate Limit (429) - common on the free tier
     if (error.message.includes("429")) {
-      return "⚠️ Zelvora is a bit busy (Free Tier limit). Please wait 60 seconds and try again!";
+      return "I'm a bit busy right now! Please wait 60 seconds and ask me again.";
     }
-    return "❌ Connection error. Please check your internet.";
+    console.error("Zelvora API Error:", error);
+    return "I'm having trouble connecting right now. Please check your internet or try again.";
   }
 }
