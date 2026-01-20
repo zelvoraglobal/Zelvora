@@ -103,7 +103,7 @@
 
       try {
         // Correct Model Call for Jan 2026
-        const model = ai.getGenerativeModel({ model: "gemini-3-flash" });
+        const model = ai.getGenerativeModel({ model: "gemini-3-flash-preview" });
         
         const result = await model.generateContent({
           contents: [{ role: "user", parts: [{ text: text }] }],
