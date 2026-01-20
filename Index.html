@@ -130,5 +130,42 @@
     sendBtn.onclick = handleRequest;
     userInput.addEventListener("keypress", (e) => { if(e.key === "Enter") handleRequest(); });
   </script>
+  <script type="module">
+  import { askZelvora } from './gemini.js';
+
+  const sendBtn = document.getElementById('sendBtn');
+  const userInput = document.getElementById('userInput');
+  const chatDisplay = document.getElementById('chatDisplay');
+
+  sendBtn.addEventListener('click', async () => {
+    const text = userInput.value;
+    if (!text) return;
+
+    // 1. Show User Text
+    chatDisplay.innerHTML += `<div class="user-msg">You: ${text}</div>`;
+    userInput.value = '';
+
+    // 2. Show "Zelvora is thinking..."
+    const loadingId = "loading-" + Date.now();
+    chatDisplay.innerHTML += `<div id="${loadingId}" class="ai-msg"><i>Zelvora is thinking...</i></div>`;
+
+    // 3. Call the Brain
+    const response = await askZelvora(text);
+
+    // 4. Update UI with Response
+    document.getElementById(loadingId).innerHTML = `Zelvora: ${response}`;
+    
+    // 5. Automatic Voice Response
+    speak(response);
+  });
+
+  // Simple 2026 Text-to-Speech
+  function speak(text) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US'; // Set to 'en-IN' for an Indian English accent
+    window.speechSynthesis.speak(utterance);
+  }
+</script>
+
 </body>
 </html>
