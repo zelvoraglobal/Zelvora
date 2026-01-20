@@ -153,5 +153,35 @@
     sendBtn.onclick = handleRequest;
     userInput.addEventListener("keypress", (e) => { if(e.key === "Enter") handleRequest(); });
   </script>
+  ...
+  <!-- Your page content -->
+
+  <script type="module">
+    import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+    const API_KEY = "AIzaSyDpueYhA7kc3ciwCet51GJv3_qBf4GtEAo";
+    const genAI = new GoogleGenerativeAI(API_KEY);
+
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      systemInstruction:
+        "You are the Zelvora Coach. Help with English fluency, academics, and business mentoring. Keep answers under 3 sentences."
+    });
+
+    async function askZelvora(prompt) {
+      try {
+        const result = await model.generateContent(prompt);
+        return result.response.text();
+      } catch (err) {
+        console.error("Gemini error:", err);
+        return "Zelvora is unavailable right now.";
+      }
+    }
+
+    // expose to browser console & buttons
+    window.askZelvora = askZelvora;
+  </script>
+</body>
+</html>
 </body>
 </html>
