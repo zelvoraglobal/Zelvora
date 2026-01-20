@@ -1,30 +1,30 @@
-// 2026 Standard: Using the new Google GenAI SDK via esm.run
-import { GoogleGenAI } from "https://esm.run/@google/genai";
+// gemini.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getAI, getGenerativeModel } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-ai.js";
 
-// 1. Initialize with your Restricted API Key
-const API_KEY = " "; 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+// 1. Paste your PUBLIC Firebase Config here (from Firebase Console Settings)
+const firebaseConfig = {
+  apiKey: "AIza...", 
+  authDomain: "zelvora-global.firebaseapp.com",
+  projectId: "zelvora-global",
+  appId: "1:..."
+};
+
+// 2. Initialize the Secure Tunnel
+const app = initializeApp(firebaseConfig);
+const ai = getAI(app);
+
+// 3. Setup Gemini 3 Flash (The 2026 Speed King)
+const model = getGenerativeModel(ai, { 
+  model: "gemini-3-flash-preview" 
+});
 
 export async function askZelvora(prompt) {
   try {
-    // 2. Using Gemini 3 Flash (Released Dec 2025)
-    // Optimized for speed, reasoning, and Indian English accents
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      systemInstruction: "You are the Zelvora Coach. You are a professional, encouraging expert in English fluency and Indian academic success. Keep responses under 3 sentences for natural voice playback.",
-      contents: [{ role: "user", parts: [{ text: prompt }] }]
-    });
-
-    return response.text;
+    const result = await model.generateContent(prompt);
+    return result.response.text();
   } catch (error) {
-    // 3. 2026 Error Handling
-    if (error.message.includes("429")) {
-      return "Zelvora is currently resting. Please wait 60 seconds.";
-    }
-    if (error.message.includes("403")) {
-      return "Security Error: Please check your Google Cloud domain restrictions.";
-    }
-    console.error("Zelvora API Error:", error);
-    return "I'm having trouble connecting. Please check your internet.";
+    console.error("Zelvora Connection Error:", error);
+    return "I'm having trouble connecting to my brain. Please check your internet or Firebase setup.";
   }
 }
