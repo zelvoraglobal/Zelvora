@@ -1,170 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Zelvora AI Coach</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Zelvora – Online Academy & Mentoring</title>
 
-  <style>
-    body {
-      font-family: system-ui, Arial, sans-serif;
-      background: #f6f7fb;
-      margin: 0;
-      padding: 0;
-    }
+<style>
+:root{
+  --primary:#0c2340;
+  --accent:#1f7aff;
+  --bg:#f6f7fb;
+  --card:#ffffff;
+  --text:#111827;
+  --muted:#6b7280;
+}
 
-    header {
-      background: #0c2340;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
 
-    main {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 20px;
-    }
+/* ---------- HEADER ---------- */
+header{
+  background:white;
+  padding:14px 20px;
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
+}
+.nav{
+  max-width:1100px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.nav a{
+  text-decoration:none;
+  color:#374151;
+  margin-left:16px;
+  font-size:14px;
+}
 
-    .chat-box {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
+/* ---------- HERO ---------- */
+.hero{
+  max-width:1100px;
+  margin:40px auto;
+  background:linear-gradient(135deg,#0c2340,#08192f);
+  color:white;
+  border-radius:22px;
+  padding:40px;
+}
+.hero h1{
+  font-size:32px;
+  margin-bottom:12px;
+}
+.hero p{
+  max-width:600px;
+  color:#dbeafe;
+}
 
-    #chat-output {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 15px;
-      min-height: 200px;
-      max-height: 350px;
-      overflow-y: auto;
-      margin-bottom: 15px;
-      background: #fafafa;
-    }
+/* ---------- SECTIONS ---------- */
+.section{
+  max-width:1100px;
+  margin:40px auto;
+}
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:18px;
+}
+.card{
+  background:var(--card);
+  padding:20px;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.05);
+}
+.card h3{
+  margin-top:0;
+}
 
-    .input-row {
-      display: flex;
-      gap: 10px;
-    }
+/* ---------- FOOTER ---------- */
+footer{
+  background:#0b1220;
+  color:#cbd5f5;
+  padding:30px 20px;
+  text-align:center;
+  font-size:13px;
+}
 
-    input {
-      flex: 1;
-      padding: 12px;
-      font-size: 14px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
+/* ---------- AI CHAT ---------- */
+#ai-btn{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  background:#22c55e;
+  color:white;
+  font-size:26px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  z-index:9999;
+}
 
-    button {
-      padding: 12px 20px;
-      border-radius: 8px;
-      border: none;
-      background: #1f7aff;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-    }
+#ai-box{
+  position:fixed;
+  bottom:90px;
+  right:20px;
+  width:300px;
+  background:white;
+  border-radius:14px;
+  box-shadow:0 20px 40px rgba(0,0,0,.25);
+  display:none;
+  flex-direction:column;
+  overflow:hidden;
+  z-index:9999;
+}
 
-    button:disabled {
-      background: #999;
-      cursor: not-allowed;
-    }
+#ai-header{
+  background:#1f7aff;
+  color:white;
+  padding:10px;
+  font-size:14px;
+}
 
-    .thinking {
-      font-size: 13px;
-      color: #666;
-      margin-top: 8px;
-      display: none;
-    }
-  </style>
+#ai-output{
+  padding:10px;
+  font-size:13px;
+  height:160px;
+  overflow-y:auto;
+}
+
+#ai-input{
+  border:none;
+  border-top:1px solid #e5e7eb;
+  padding:10px;
+  width:100%;
+  outline:none;
+}
+
+#ai-send{
+  border:none;
+  background:#1f7aff;
+  color:white;
+  padding:10px;
+  cursor:pointer;
+}
+</style>
 </head>
 
 <body>
 
 <header>
-  <h1>Zelvora AI Coach</h1>
-  <p>Ask questions about studies, skills, or business</p>
+  <div class="nav">
+    <strong>ZELVORA</strong>
+    <nav>
+      <a href="#">For Students</a>
+      <a href="#">For Business</a>
+      <a href="#">Learning & Mentoring</a>
+      <a href="#">Contact</a>
+      <a href="#">Enquire</a>
+    </nav>
+  </div>
 </header>
 
-<main>
-  <div class="chat-box">
+<section class="hero">
+  <h1>One platform for tuition, skills and business mentoring</h1>
+  <p>
+    Zelvora helps students, young adults and small business owners with
+    clear teaching, skill training and practical guidance — fully online.
+  </p>
+</section>
 
-    <div id="chat-output">
-      <b>System:</b> Zelvora AI is ready. Ask your question below 👇
+<section class="section">
+  <h2>For students & young learners</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>School Tuition</h3>
+      <p>Classes 5–12 with focus on concepts and exams.</p>
     </div>
-
-    <div class="input-row">
-      <input
-        id="user-input"
-        type="text"
-        placeholder="Type your question here..."
-      />
-      <button id="send-btn">Send</button>
+    <div class="card">
+      <h3>Skill Development</h3>
+      <p>Spoken English, confidence, basics of computers.</p>
     </div>
-
-    <div id="status" class="thinking">Zelvora is thinking...</div>
-
+    <div class="card">
+      <h3>Study Support</h3>
+      <p>Guidance, revision and doubt clearing.</p>
+    </div>
   </div>
-</main>
+</section>
 
-<!-- ✅ FIREBASE + GEMINI -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-  import { getAI, getGenerativeModel } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-ai.js";
+<section class="section">
+  <h2>For entrepreneurs & professionals</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>Business Mentoring</h3>
+      <p>Start, structure and grow your business.</p>
+    </div>
+    <div class="card">
+      <h3>Career Guidance</h3>
+      <p>Direction, planning and accountability.</p>
+    </div>
+    <div class="card">
+      <h3>Productivity Coaching</h3>
+      <p>Habits, focus and consistency.</p>
+    </div>
+  </div>
+</section>
 
-  // 🔑 YOUR FIREBASE CONFIG (replace ONLY values, not keys)
-  const firebaseConfig = {
-    apiKey: "AIzaSy-REPLACE",
-    authDomain: "zelvora-global.firebaseapp.com",
-    projectId: "zelvora-global",
-    appId: "1:REPLACE:web:REPLACE"
-  };
+<footer>
+  © 2026 Zelvora. All rights reserved.
+</footer>
 
-  const app = initializeApp(firebaseConfig);
+<!-- ================= AI CHAT ================= -->
 
-  // IMPORTANT: google-ai = Gemini Developer API (free tier style)
-  const ai = getAI(app, { backend: "google-ai" });
+<div id="ai-btn">💬</div>
 
-  const model = getGenerativeModel(ai, {
-    model: "gemini-3-flash-preview"
-  });
+<div id="ai-box">
+  <div id="ai-header">Zelvora AI</div>
+  <div id="ai-output">
+    Hi 👋 I’m Zelvora AI.<br/>
+    Ask me about English, studies or business.
+  </div>
+  <input id="ai-input" placeholder="Type your question…" />
+  <button id="ai-send">Send</button>
+</div>
 
-  const output = document.getElementById("chat-output");
-  const input = document.getElementById("user-input");
-  const sendBtn = document.getElementById("send-btn");
-  const status = document.getElementById("status");
+<script>
+const btn = document.getElementById("ai-btn");
+const box = document.getElementById("ai-box");
+const input = document.getElementById("ai-input");
+const output = document.getElementById("ai-output");
 
-  async function handleChat() {
-    const prompt = input.value.trim();
-    if (!prompt) return;
+btn.onclick = () => {
+  box.style.display = box.style.display === "flex" ? "none" : "flex";
+};
 
-    output.innerHTML += `<div><b>You:</b> ${prompt}</div>`;
-    input.value = "";
-    sendBtn.disabled = true;
-    status.style.display = "block";
-    output.scrollTop = output.scrollHeight;
-
-    try {
-      const result = await model.generateContent(prompt);
-      const reply = result.response.text();
-
-      output.innerHTML += `<div style="margin-top:10px;"><b>Zelvora:</b> ${reply}</div>`;
-    } catch (err) {
-      console.error(err);
-      output.innerHTML += `<div style="color:red;">Error connecting to AI</div>`;
-    } finally {
-      sendBtn.disabled = false;
-      status.style.display = "none";
-      output.scrollTop = output.scrollHeight;
-    }
-  }
-
-  sendBtn.addEventListener("click", handleChat);
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") handleChat();
-  });
+document.getElementById("ai-send").onclick = () => {
+  const q = input.value.trim();
+  if(!q) return;
+  output.innerHTML += `<div><b>You:</b> ${q}</div>`;
+  output.innerHTML += `<div><b>Zelvora:</b> (AI will respond here)</div>`;
+  input.value = "";
+  output.scrollTop = output.scrollHeight;
+};
 </script>
 
 </body>
