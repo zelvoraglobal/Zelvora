@@ -36,6 +36,11 @@ header{
   justify-content:space-between;
   align-items:center;
 }
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .nav a{
   text-decoration:none;
   color:#374151;
@@ -87,7 +92,7 @@ header{
   border-left: 4px solid var(--success);
 }
 
-/* ---------- AI CHAT ---------- */
+/* ---------- AI CHAT WIDGET ---------- */
 #ai-btn{
   position:fixed;
   bottom:20px;
@@ -174,7 +179,10 @@ header{
 
 <header>
   <div class="nav">
-    <strong style="font-size: 20px; color: var(--primary);">ZELVORA</strong>
+    <div class="logo-area">
+      <img src="logo.png" alt="Z" style="height: 32px; width: auto; display: none;" onload="this.style.display='block'">
+      <strong style="font-size: 20px; color: var(--primary); letter-spacing: 1px;">ZELVORA</strong>
+    </div>
     <nav>
       <a href="#">Students</a>
       <a href="#">Business</a>
@@ -185,8 +193,25 @@ header{
 </header>
 
 <section class="hero">
-  <h1>One platform for tuition, skills and business mentoring</h1>
-  <p>Zelvora helps students and entrepreneurs with practical guidance — fully online.</p>
+  <h1>Empowering Minds Through <br/>Strategic Mentoring</h1>
+  <p>Zelvora Global: Your partner in academic excellence and business growth.</p>
+</section>
+
+<section class="section">
+  <div class="cards">
+    <div class="card">
+      <h3>Academic Tuition</h3>
+      <p>Classes 5-12 focused on mastery and confidence.</p>
+    </div>
+    <div class="card">
+      <h3>Business Mentoring</h3>
+      <p>Practical steps to launch and scale your venture.</p>
+    </div>
+    <div class="card">
+      <h3>Spoken English</h3>
+      <p>Professional communication training for the global stage.</p>
+    </div>
+  </div>
 </section>
 
 <div id="ai-btn">💬</div>
@@ -206,7 +231,7 @@ header{
 </div>
 
 <script type="module">
-  // FIX: Using lowercase filename to match GitHub standards
+  // IMPORT MUST USE LOWERCASE FILENAME FOR GITHUB PAGES
   import { askZelvora } from "./gemini.js";
 
   const btn = document.getElementById("ai-btn");
@@ -238,7 +263,7 @@ header{
 
     const load = document.createElement("div");
     load.className = "msg ai-msg";
-    load.innerHTML = "<i>Thinking...</i>";
+    load.innerHTML = "<i>Zelvora is thinking...</i>";
     output.appendChild(load);
 
     try {
@@ -246,7 +271,7 @@ header{
       load.remove();
       addMsg(`<b>Zelvora:</b> ${res}`, false);
     } catch (e) {
-      load.innerHTML = "⚠️ Sorry, I can't connect right now.";
+      load.innerHTML = "⚠️ I am having trouble connecting. Check your internet.";
       console.error(e);
     } finally {
       sendBtn.disabled = false;
