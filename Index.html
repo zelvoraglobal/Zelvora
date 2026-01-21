@@ -9,6 +9,7 @@
 :root{
   --primary:#0c2340;
   --accent:#1f7aff;
+  --success:#22c55e;
   --bg:#f6f7fb;
   --card:#ffffff;
   --text:#111827;
@@ -40,51 +41,65 @@ header{
   color:#374151;
   margin-left:16px;
   font-size:14px;
+  font-weight: 500;
 }
 
 /* ---------- HERO ---------- */
 .hero{
   max-width:1100px;
   margin:40px auto;
-  background:linear-gradient(135deg,#0c2340,#08192f);
+  background:linear-gradient(135deg, var(--primary), #1a3a5f);
   color:white;
   border-radius:22px;
-  padding:40px;
+  padding:60px 40px;
+  border-bottom: 6px solid var(--success);
 }
 .hero h1{
-  font-size:32px;
-  margin-bottom:12px;
+  font-size:38px;
+  margin-bottom:16px;
+  line-height: 1.2;
 }
 .hero p{
   max-width:600px;
   color:#dbeafe;
+  font-size: 18px;
 }
 
 /* ---------- SECTIONS ---------- */
 .section{
   max-width:1100px;
-  margin:40px auto;
+  margin:60px auto;
+}
+.section h2 {
+  margin-bottom: 24px;
+  font-size: 24px;
 }
 .cards{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:18px;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:20px;
 }
 .card{
   background:var(--card);
-  padding:20px;
+  padding:30px;
   border-radius:16px;
   box-shadow:0 10px 30px rgba(0,0,0,.05);
+  transition: transform 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-5px);
+  border-left: 4px solid var(--success);
 }
 .card h3{
   margin-top:0;
+  color: var(--primary);
 }
 
 /* ---------- FOOTER ---------- */
 footer{
   background:#0b1220;
   color:#cbd5f5;
-  padding:30px 20px;
+  padding:40px 20px;
   text-align:center;
   font-size:13px;
 }
@@ -94,62 +109,86 @@ footer{
   position:fixed;
   bottom:20px;
   right:20px;
-  width:58px;
-  height:58px;
+  width:64px;
+  height:64px;
   border-radius:50%;
-  background:#22c55e;
+  background:var(--success);
   color:white;
-  font-size:26px;
+  font-size:30px;
   display:flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
   z-index:9999;
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
 }
 
 #ai-box{
   position:fixed;
-  bottom:90px;
+  bottom:95px;
   right:20px;
-  width:300px;
+  width:340px;
+  height: 480px;
   background:white;
-  border-radius:14px;
-  box-shadow:0 20px 40px rgba(0,0,0,.25);
+  border-radius:18px;
+  box-shadow:0 20px 50px rgba(0,0,0,.2);
   display:none;
   flex-direction:column;
   overflow:hidden;
   z-index:9999;
+  border: 1px solid #e5e7eb;
 }
 
 #ai-header{
-  background:#1f7aff;
+  background:var(--primary);
   color:white;
-  padding:10px;
-  font-size:14px;
+  padding:15px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
 }
 
 #ai-output{
-  padding:10px;
-  font-size:13px;
-  height:160px;
+  padding:15px;
+  font-size:14px;
+  flex: 1;
   overflow-y:auto;
+  background: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.msg { padding: 10px 14px; border-radius: 14px; max-width: 85%; line-height: 1.5; }
+.user-msg { background: var(--accent); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+.ai-msg { background: white; color: var(--text); align-self: flex-自start; border-bottom-left-radius: 2px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+#ai-input-area {
+  display: flex;
+  border-top:1px solid #e5e7eb;
+  padding:10px;
 }
 
 #ai-input{
   border:none;
-  border-top:1px solid #e5e7eb;
   padding:10px;
-  width:100%;
+  flex: 1;
   outline:none;
+  font-size: 14px;
 }
 
 #ai-send{
   border:none;
-  background:#1f7aff;
+  background:var(--accent);
   color:white;
-  padding:10px;
+  padding:8px 16px;
+  border-radius: 8px;
   cursor:pointer;
+  font-weight: 600;
 }
+
+#ai-send:disabled { background: var(--muted); opacity: 0.6; }
+
 </style>
 </head>
 
@@ -157,97 +196,145 @@ footer{
 
 <header>
   <div class="nav">
-    <strong>ZELVORA</strong>
+    <strong style="font-size: 20px; color: var(--primary); letter-spacing: 1px;">ZELVORA</strong>
     <nav>
-      <a href="#">For Students</a>
-      <a href="#">For Business</a>
-      <a href="#">Learning & Mentoring</a>
+      <a href="#">Students</a>
+      <a href="#">Business</a>
+      <a href="#">Mentoring</a>
       <a href="#">Contact</a>
-      <a href="#">Enquire</a>
+      <a href="#" style="background: var(--primary); color: white; padding: 8px 16px; border-radius: 8px;">Enquire</a>
     </nav>
   </div>
 </header>
 
 <section class="hero">
-  <h1>One platform for tuition, skills and business mentoring</h1>
+  <h1>Empowering Growth Through <br/>Expert Mentoring & Education</h1>
   <p>
-    Zelvora helps students, young adults and small business owners with
-    clear teaching, skill training and practical guidance — fully online.
+    Zelvora Global provides world-class tuition, career training, and business 
+    mentoring to help you achieve your professional and academic goals.
   </p>
 </section>
 
 <section class="section">
-  <h2>For students & young learners</h2>
+  <h2>For Students & Learners</h2>
   <div class="cards">
     <div class="card">
-      <h3>School Tuition</h3>
-      <p>Classes 5–12 with focus on concepts and exams.</p>
+      <h3>School Excellence</h3>
+      <p>Concept-based teaching for Classes 5–12. Build a foundation that lasts a lifetime.</p>
     </div>
     <div class="card">
-      <h3>Skill Development</h3>
-      <p>Spoken English, confidence, basics of computers.</p>
+      <h3>Spoken English</h3>
+      <p>Master English fluency and professional communication with expert coaches.</p>
     </div>
     <div class="card">
-      <h3>Study Support</h3>
-      <p>Guidance, revision and doubt clearing.</p>
+      <h3>Career Readiness</h3>
+      <p>Guidance on higher education, skill gaps, and entrance exam preparation.</p>
     </div>
   </div>
 </section>
 
 <section class="section">
-  <h2>For entrepreneurs & professionals</h2>
+  <h2>For Professionals & Business</h2>
   <div class="cards">
     <div class="card">
-      <h3>Business Mentoring</h3>
-      <p>Start, structure and grow your business.</p>
+      <h3>Business Strategy</h3>
+      <p>Launch and scale your startup with practical, real-world mentoring.</p>
     </div>
     <div class="card">
-      <h3>Career Guidance</h3>
-      <p>Direction, planning and accountability.</p>
+      <h3>Executive Coaching</h3>
+      <p>Leadership training and productivity systems for modern professionals.</p>
     </div>
     <div class="card">
-      <h3>Productivity Coaching</h3>
-      <p>Habits, focus and consistency.</p>
+      <h3>Digital Literacy</h3>
+      <p>Essential tech skills for the modern workplace, from AI basics to productivity apps.</p>
     </div>
   </div>
 </section>
 
 <footer>
-  © 2026 Zelvora. All rights reserved.
+  <p>© 2026 Zelvora Academy & Mentoring. Empowering Global Minds.</p>
 </footer>
 
-<!-- ================= AI CHAT ================= -->
-
-<div id="ai-btn">💬</div>
+<div id="ai-btn" title="Ask Zelvora AI">💬</div>
 
 <div id="ai-box">
-  <div id="ai-header">Zelvora AI</div>
-  <div id="ai-output">
-    Hi 👋 I’m Zelvora AI.<br/>
-    Ask me about English, studies or business.
+  <div id="ai-header">
+    <span>Zelvora AI Mentor</span>
+    <span style="cursor:pointer" onclick="document.getElementById('ai-box').style.display='none'">✕</span>
   </div>
-  <input id="ai-input" placeholder="Type your question…" />
-  <button id="ai-send">Send</button>
+  <div id="ai-output">
+    <div class="ai-msg">Hello! I'm Zelvora, your AI Mentor. How can I help with your studies, business, or English practice today?</div>
+  </div>
+  <div id="ai-input-area">
+    <input id="ai-input" placeholder="Ask me anything..." autocomplete="off" />
+    <button id="ai-send">Send</button>
+  </div>
 </div>
 
-<script>
-const btn = document.getElementById("ai-btn");
-const box = document.getElementById("ai-box");
-const input = document.getElementById("ai-input");
-const output = document.getElementById("ai-output");
+<script type="module">
+  // We import the function from your gemini.js
+  import { askZelvora } from "./gemini.js";
 
-btn.onclick = () => {
-  box.style.display = box.style.display === "flex" ? "none" : "flex";
-};
+  const btn = document.getElementById("ai-btn");
+  const box = document.getElementById("ai-box");
+  const input = document.getElementById("ai-input");
+  const output = document.getElementById("ai-output");
+  const sendBtn = document.getElementById("ai-send");
 
-document.getElementById("ai-send").onclick = () => {
-  const q = input.value.trim();
-  if(!q) return;
-  output.innerHTML += `<div><b>You:</b> ${q}</div>`;
-  output.innerHTML += `<div><b>Zelvora:</b> (AI will respond here)</div>`;
-  input.value = "";
-  output.scrollTop = output.scrollHeight;
-};
+  // Toggle Chat View
+  btn.onclick = () => {
+    box.style.display = box.style.display === "flex" ? "none" : "flex";
+    if(box.style.display === "flex") input.focus();
+  };
+
+  // UI Message Adder
+  function addMessage(text, isUser = false) {
+    const div = document.createElement("div");
+    div.className = isUser ? "msg user-msg" : "msg ai-msg";
+    div.innerHTML = text;
+    output.appendChild(div);
+    output.scrollTop = output.scrollHeight;
+  }
+
+  // Handle AI Call
+  async function handleChat() {
+    const prompt = input.value.trim();
+    if (!prompt || sendBtn.disabled) return;
+
+    // Show User Message
+    addMessage(prompt, true);
+    input.value = "";
+    
+    // Loading State
+    sendBtn.disabled = true;
+    const loadingId = "loading-" + Date.now();
+    const loadingDiv = document.createElement("div");
+    loadingDiv.id = loadingId;
+    loadingDiv.className = "msg ai-msg";
+    loadingDiv.innerHTML = "<i>Zelvora is typing...</i>";
+    output.appendChild(loadingDiv);
+    output.scrollTop = output.scrollHeight;
+
+    try {
+      // Call gemini.js
+      const response = await askZelvora(prompt);
+      
+      // Replace loading with real response
+      document.getElementById(loadingId).remove();
+      addMessage(response);
+    } catch (err) {
+      document.getElementById(loadingId).innerHTML = "⚠️ Sorry, I'm having trouble connecting right now.";
+      console.error(err);
+    } finally {
+      sendBtn.disabled = false;
+    }
+  }
+
+  // Click & Enter Listeners
+  sendBtn.onclick = handleChat;
+  input.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") handleChat();
+  });
 </script>
 
 </body>
